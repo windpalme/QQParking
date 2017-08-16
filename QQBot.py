@@ -145,6 +145,7 @@ def sendfailmail():
         server.quit()
         return True
     except Exception , e:
+        logging.error(SUBJECT)
         logging.error("发送程序错误邮件失败:"+str(e))
         return False
 def date_to_millis(d):
@@ -659,7 +660,7 @@ class pmchat_thread(threading.Thread):
 
 
     # con = threading.Condition()
-    autoreply = '最近需要认真学习，不上QQ,有事请邮件联系。接下来由小黄鸡代我与您聊天！在聊天时输入【record】可以开始给我留言，(英文单词: record），输入此命令并在收到提示后输入留言内容即可.record前面不能有空格（r需为该消息的第一个字符）'
+    autoreply = '最近不上QQ，有事请邮件联系。'
     # newIp = ''
 
     def __init__(self, tuin, isSess, group_sig, service_type,ini_txt,ini_msgid,myid):
@@ -689,7 +690,7 @@ class pmchat_thread(threading.Thread):
 
     def reply(self, content):
         failtimes = 0
-        while not send_msg(self.tuin, str(content)+"(此消息来自小黄鸡，非本人)", self.isSess, self.group_sig, self.service_type):
+        while not send_msg(self.tuin, str(content)+"", self.isSess, self.group_sig, self.service_type):
             failtimes = failtimes + 1
             if failtimes >= 3:
                 break
@@ -758,7 +759,7 @@ class pmchat_thread(threading.Thread):
             logging.info("AI REPLY:"+str(info))
             info = json.loads(info)
             if info["code"] in [40001, 40003, 40004]:
-                self.reply("我今天累了，不聊了")
+                self.reply("今天累了，不聊了")
                 logging.warning("Reach max AI call")
             elif info["code"] in [40002, 40005, 40006, 40007]:
                 self.reply("我遇到了一点问题，请稍后@我")
